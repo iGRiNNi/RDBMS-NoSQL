@@ -1,6 +1,6 @@
 package dal.dao;
 
-import dal.connection.ConnectionManager;
+import dal.infrastructure.connection.ConnectionManager;
 import dal.dao.abstracts.AbstractDao;
 import dal.dao.mapper.ClusterRowMapper;
 import model.Cluster;

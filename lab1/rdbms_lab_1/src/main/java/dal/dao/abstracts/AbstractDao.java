@@ -2,7 +2,7 @@ package dal.dao.abstracts;
 
 import dal.dao.interfaces.Dao;
 import dal.dao.mapper.RowMapper;
-import dal.connection.ConnectionManager;
+import dal.infrastructure.connection.ConnectionManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

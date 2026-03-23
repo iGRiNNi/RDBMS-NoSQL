@@ -1,16 +1,13 @@
 package dal.dao;
 
-import dal.connection.ConnectionManager;
+import dal.infrastructure.connection.ConnectionManager;
 import dal.dao.abstracts.AbstractDao;
-import dal.dao.interfaces.Dao;
 import dal.dao.mapper.WellRowMapper;
-import model.Field;
 import model.Well;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 public class WellDao extends AbstractDao<Well, Long> {
 

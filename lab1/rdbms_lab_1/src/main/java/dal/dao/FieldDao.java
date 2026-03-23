@@ -1,6 +1,6 @@
 package dal.dao;
 
-import dal.connection.ConnectionManager;
+import dal.infrastructure.connection.ConnectionManager;
 import dal.dao.abstracts.AbstractDao;
 import dal.dao.mapper.FieldRowMapper;
 import model.Field;
@@ -30,7 +30,7 @@ public class FieldDao extends AbstractDao<Field, Long> {
     public void insert(Field field) throws SQLException {
         String sql = """
 INSERT INTO field (name, region, latitude, longitude, start_date, oil_reserves)
-VALUES (?, ?, ?, ?, ?, ?)
+//VALUES (?, ?, ?, ?, ?, ?)
                 """;
 
         try (Connection connection = ConnectionManager.getConnection();
