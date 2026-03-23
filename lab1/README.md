@@ -17,9 +17,9 @@ docker-compose up -d
 
 далее вкладка *connection*:  
 
-> Host name: localhost
-> Port: 15432
-> Maintenance database: oil_field
-> Username: postgres
-> Password: postgres
+> Host name: localhost  
+> Port: 15432  
+> Maintenance database: oil_field  
+> Username: postgres  
+> Password: postgres  
 
