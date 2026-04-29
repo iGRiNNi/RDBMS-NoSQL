@@ -5,10 +5,7 @@ import dal.dao.abstracts.AbstractDao;
 import dal.dao.mapper.ProductionRowMapper;
 import model.Production;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class ProductionDao extends AbstractDao<Production, Long> {
 
@@ -43,6 +40,7 @@ public class ProductionDao extends AbstractDao<Production, Long> {
         String sql = """
             INSERT INTO production (well_id, date, oil, gas, water)
             VALUES (?, ?, ?, ?, ?)
+            RETURNING id
             """;
 
         try (Connection connection = ConnectionManager.getConnection();
@@ -54,7 +52,11 @@ public class ProductionDao extends AbstractDao<Production, Long> {
             statement.setObject(4, production.getGas());
             statement.setObject(5, production.getWater());
 
-            statement.executeUpdate();
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    production.setId(rs.getLong("id"));
+                }
+            }
         }
     }
 
@@ -102,7 +104,11 @@ public class ProductionDao extends AbstractDao<Production, Long> {
             statement.setObject(5, production.getWater());
             statement.setLong(6, production.getId());
 
-            statement.executeUpdate();
+            int updatedRows = statement.executeUpdate();
+
+            if (updatedRows == 0) {
+                throw new SQLException("Cluster with id " + production.getId() + " was not found");
+            }
         }
     }
 }

@@ -132,6 +132,17 @@ VALUES
     (23, 16, '2026-03-11', 185.30, 782.20, 28.30),
     (24, 17, '2026-03-11', 190.00, 798.00, 29.40);
 
+INSERT INTO production (id, well_id, date, oil, gas, water)
+VALUES
+    (25, 1, CURRENT_DATE - 10, 40.00, 500.00, 120.00),
+    (26, 1, CURRENT_DATE - 5,  42.00, 510.00, 125.00),
+
+    (27, 4, CURRENT_DATE - 9,  55.00, 600.00, 140.00),
+    (28, 4, CURRENT_DATE - 4,  53.00, 610.00, 138.00),
+
+    (29, 13, CURRENT_DATE - 7, 35.00, 220.00, 90.00),
+    (30, 13, CURRENT_DATE - 2, 37.00, 225.00, 95.00);
+
 INSERT INTO contractor (id, name, specialization, phone, field_id)
 VALUES
     (1, 'ООО БурСервис', 'Буровые работы', '+7-900-100-10-10', 1),
@@ -187,14 +198,68 @@ INNER JOIN production p ON p.well_id = w.id
  CROSS JOIN contractor c
 
 
-	 SELECT
-    f.name AS месторождение,
-    f.region AS регион,
-    COUNT(c.id) AS количество_подрядчиков
-FROM field f
-LEFT JOIN contractor c ON c.field_id = f.id
-GROUP BY f.id, f.name, f.region
-ORDER BY количество_подрядчиков DESC, месторождение;
+-- 	 SELECT f.name AS месторождение
+--     	  ,	f.region AS регион
+--           ,  COUNT(c.id) AS количество_подрядчиков
+-- FROM field f
+-- LEFT JOIN contractor c ON c.field_id = f.id
+-- GROUP BY f.id, f.name, f.region
+-- ORDER BY количество_подрядчиков DESC, месторождение;
+
+-- три активные скважины, где средний объём воды больше среднего объёма нефти за последний месяц
+	SELECT c.name AS group_name
+	     , w.number AS well_number
+	     , AVG(p.oil) AS avg_oil
+	     , AVG(p.water) AS avg_water
+	  FROM well w
+	  JOIN cluster c ON c.id = w.cluster_id
+	  JOIN production p ON p.well_id = w.id
+	 WHERE w.status = 'active'
+	   AND p.date >= CURRENT_DATE - INTERVAL '1 month'
+	   AND p.date <= CURRENT_DATE
+  GROUP BY c.name, w.number
+    HAVING AVG(p.water) > AVG(p.oil)
+  ORDER BY avg_water DESC
+     LIMIT 3;
+
+-- сравнить среднюю добычу скважины со средней в группе
+WITH well_avg AS (
+    SELECT w.cluster_id
+         , c.name AS group_name
+         , w.number AS well_number
+         , AVG(p.oil) AS avg_oil_by_well
+      FROM well w
+      JOIN cluster c ON c.id = w.cluster_id
+      JOIN production p ON p.well_id = w.id
+  GROUP BY w.cluster_id, c.name, w.number
+)
+  SELECT group_name
+       , well_number
+       , avg_oil_by_well
+       , AVG(avg_oil_by_well) OVER (PARTITION BY cluster_id) AS avg_oil_in_group
+       , CASE
+           WHEN avg_oil_by_well > AVG(avg_oil_by_well) OVER (PARTITION BY cluster_id)
+             THEN 'Выше среднего'
+           WHEN avg_oil_by_well = AVG(avg_oil_by_well) OVER (PARTITION BY cluster_id)
+             THEN 'Равно среднему'
+           ELSE 'Ниже среднего'
+         END AS above_group_avg
+    FROM well_avg
+ORDER BY group_name, well_number;
+
+-- вывести все кластеры иерархией
+WITH RECURSIVE rec(id, name, level) AS (
+    SELECT id, name, 1 as level
+	  FROM cluster 
+	 WHERE field_id = 1 AND parent_cluster_id IS NULL
+     UNION ALL
+    SELECT c.id, c.name, rec.level + 1 as level 
+      FROM cluster c 
+	  JOIN rec ON rec.id = c.parent_cluster_id
+)
+SELECT * FROM rec;
+
+SELECT * FROM cluster WHERE field_id = 1
 
 -- DROP TABLE production;
 -- DROP TABLE contractor;

@@ -68,7 +68,11 @@ public abstract class AbstractDao<T, ID> implements Dao<T, ID> {
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setObject(1, id);
-            statement.executeUpdate();
+            int deletedRows = statement.executeUpdate();
+
+            if (deletedRows == 0) {
+                throw new SQLException("Entity with id " + id + " was not found in table " + getTableName());
+            }
         }
     }
 }
