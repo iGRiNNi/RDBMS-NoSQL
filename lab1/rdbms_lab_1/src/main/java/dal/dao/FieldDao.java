@@ -139,6 +139,7 @@ public class FieldDao extends AbstractDao<Field, Long> {
                 	  , c.name AS "contractor_name"
                    FROM field f
              CROSS JOIN contractor c
+                  WHERE c.field_id = f.id
              """;
 
         return executeFieldContractorQuery(sql);

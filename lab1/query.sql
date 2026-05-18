@@ -104,7 +104,7 @@ VALUES
     (17, 'СБ-102', 'active',      3660.00, 0.25, 14),
     (18, 'СБ-201', 'disabled',    NULL,    0.22, 15);
 
-INSERT INTO production (id, well_id, date, oil, gas, water)
+INSERT INTO production (well_id, date, oil, gas, water)
 VALUES
     (1,  1,  '2026-03-10', 120.50, 540.00, 18.20),
     (2,  2,  '2026-03-10', 132.00, 560.50, 20.10),
@@ -261,8 +261,14 @@ SELECT * FROM rec;
 
 SELECT * FROM cluster WHERE field_id = 1
 
--- DROP TABLE production;
--- DROP TABLE contractor;
--- DROP TABLE well;
--- DROP TABLE cluster;
--- DROP TABLE field;
+DROP TABLE production;
+DROP TABLE contractor;
+DROP TABLE well;
+DROP TABLE cluster;
+DROP TABLE field;
+
+INSERT INTO production (well_id,
+    oil,
+    gas,
+    water) VALUES  (1, 2, 2, 2)
+RETURNING id

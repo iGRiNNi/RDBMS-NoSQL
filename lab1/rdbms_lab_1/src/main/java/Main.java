@@ -1,5 +1,6 @@
 import dal.dao.ClusterDao;
 import dal.dao.FieldDao;
+import dal.dao.ProductionDao;
 import dal.dao.WellDao;
 import dal.infrastructure.connection.ConnectionManager;
 import dal.infrastructure.connection.DatabaseConfig;
@@ -8,9 +9,14 @@ import dto.ClusterHierarchyDto;
 import dto.FieldContractorDto;
 import dto.WellAverageComparisonDto;
 import dto.WellWaterOilDto;
+import model.Production;
 import model.Well;
+import tools.jackson.databind.ext.javatime.ser.LocalDateSerializer;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Main {
@@ -19,6 +25,31 @@ public class Main {
 
         MigrationRunner migrationRunner = new MigrationRunner(config);
         migrationRunner.migrate();
+
+        var productionDao = new ProductionDao();
+
+        long wellId = 1;
+        LocalDate date= LocalDate.of(2026, 3, 12);
+        double oil = 12;
+        double gas = 1;
+        double water = 0.5;
+
+        printAllProduction(productionDao);
+
+        var production = new Production(wellId, date, oil, gas, water);
+        insertProduction(productionDao, production);
+        System.out.println("После INSERT:");
+        printAllProduction(productionDao);
+
+        production.setGas(0.0);
+
+        updateProduction(productionDao, production);
+        System.out.println("После UPDATE:");
+        printAllProduction(productionDao);
+
+        deleteProduction(productionDao, production.getId());
+        System.out.println("После DELETE:");
+        printAllProduction(productionDao);
 
         var fieldDao = new FieldDao();
 
@@ -33,6 +64,48 @@ public class Main {
         var clusterDao = new ClusterDao();
 
         showClusterHierarchyTask(clusterDao, 1);
+    }
+
+    private static void insertProduction(ProductionDao productionDao, Production production)
+    {
+        try {
+            productionDao.insert(production);
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка вставки production", e);
+        }
+    }
+
+    private static void deleteProduction(ProductionDao productionDao, long id)
+    {
+        try {
+            productionDao.delete(id);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void updateProduction(ProductionDao productionDao, Production production)
+    {
+        try {
+            productionDao.update(production);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void printAllProduction(ProductionDao productionDao)
+    {
+        System.out.println("=== Все записи добычи ===");
+        try {
+            var res = productionDao.getAll();
+            for (Production prod : res)
+            {
+                System.out.println(prod);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("", e);
+        }
+        System.out.println();
     }
 
     private static void showJoinTasks(FieldDao fieldDao) {

@@ -1,11 +1,11 @@
-package org.example.infrastracture.redis;
+package org.example.infrastructure.redis;
 
 public final class RedisConfig {
 
     private final String host;
     private final int port;
 
-    public RedisConfig(String host, int port) {
+    private RedisConfig(String host, int port) {
         this.host = host;
         this.port = port;
     }
