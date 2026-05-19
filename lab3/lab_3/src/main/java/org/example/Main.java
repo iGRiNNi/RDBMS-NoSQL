@@ -1,5 +1,8 @@
 package org.example;
 
+import org.example.dao.hash.ClusterHashDao;
+import org.example.dao.hash.FieldHashDao;
+import org.example.dao.hash.WellHashDao;
 import org.example.dao.keyvalue.ClusterKeyValueDao;
 import org.example.dao.keyvalue.FieldKeyValueDao;
 import org.example.dao.keyvalue.WellKeyValueDao;
@@ -7,8 +10,7 @@ import org.example.domain.model.Cluster;
 import org.example.domain.model.Field;
 import org.example.domain.model.Well;
 import org.example.infrastructure.redis.RedisConnectionManager;
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
 public class Main {
 
     public static void main(String[] args) {
@@ -18,6 +20,22 @@ public class Main {
 
             runKeyValueDaoDemo();
 
+            System.out.println();
+            System.out.println("=== ПУНКТ 2. СПИСКИ REDIS ===");
+            new ListDemo().run();
+
+            System.out.println();
+            System.out.println("=== ПУНКТ 3. МНОЖЕСТВА REDIS ===");
+            new SetDemo().run();
+
+            System.out.println();
+            System.out.println("=== ПУНКТ 4. УПОРЯДОЧЕННЫЕ МНОЖЕСТВА REDIS ===");
+            new SortedSetDemo().run();
+
+            System.out.println();
+            System.out.println("=== ПУНКТ 5. CRUD ЧЕРЕЗ HASH-ТАБЛИЦЫ REDIS ===");
+            runHashDaoDemo();
+            
         } finally {
             RedisConnectionManager.closeClient();
         }
@@ -83,7 +101,7 @@ public class Main {
         Field updatedField = new Field(
                 1L,
                 "Самотлорское",
-                "ХМАО — Югра",
+                "ХМАО - Югра",
                 61.154,
                 76.684
         );
@@ -122,5 +140,97 @@ public class Main {
         System.out.println("Field после удаления: " + fieldDao.getById(1L));
         System.out.println("Cluster после удаления: " + clusterDao.getById(1L));
         System.out.println("Well после удаления: " + wellDao.getById(1L));
+    }
+
+    private static void runHashDaoDemo() {
+        FieldHashDao fieldDao = new FieldHashDao();
+        ClusterHashDao clusterDao = new ClusterHashDao();
+        WellHashDao wellDao = new WellHashDao();
+
+        Field field = new Field(
+                10L,
+                "Приобское",
+                "Ханты-Мансийский АО",
+                61.000,
+                73.500
+        );
+
+        Cluster cluster = new Cluster(
+                10L,
+                "Центральная группа",
+                10L,
+                null
+        );
+
+        Well well = new Well(
+                10L,
+                "ПР-101",
+                "active",
+                3400.0,
+                0.25,
+                10L
+        );
+
+        System.out.println();
+        System.out.println("=== HASH CREATE ===");
+
+        fieldDao.create(field);
+        clusterDao.create(cluster);
+        wellDao.create(well);
+
+        System.out.println("Сущности сохранены в Redis Hash");
+
+        System.out.println();
+        System.out.println("=== HASH READ BY ID ===");
+
+        System.out.println(fieldDao.getById(10L));
+        System.out.println(clusterDao.getById(10L));
+        System.out.println(wellDao.getById(10L));
+
+        System.out.println();
+        System.out.println("=== HASH UPDATE ===");
+
+        Field updatedField = new Field(
+                10L,
+                "Приобское",
+                "ХМАО — Югра",
+                61.000,
+                73.500
+        );
+
+        Cluster updatedCluster = new Cluster(
+                10L,
+                "Центральная эксплуатационная группа",
+                10L,
+                null
+        );
+
+        Well updatedWell = new Well(
+                10L,
+                "ПР-101",
+                "maintenance",
+                3400.0,
+                0.25,
+                10L
+        );
+
+        fieldDao.update(updatedField);
+        clusterDao.update(updatedCluster);
+        wellDao.update(updatedWell);
+
+        System.out.println(fieldDao.getById(10L));
+        System.out.println(clusterDao.getById(10L));
+        System.out.println(wellDao.getById(10L));
+
+        System.out.println();
+        System.out.println("=== HASH DELETE ===");
+
+        wellDao.delete(10L);
+        clusterDao.delete(10L);
+        fieldDao.delete(10L);
+
+        System.out.println("Field после удаления: " + fieldDao.getById(10L));
+        System.out.println("Cluster после удаления: " + clusterDao.getById(10L));
+        System.out.println("Well после удаления: " + wellDao.getById(10L));
     }
 }

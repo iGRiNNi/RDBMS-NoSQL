@@ -1,7 +1,5 @@
 package org.example.dao.abstracts;
 
-import java.util.List;
-
 public interface CrudDao<T, ID> {
 
     void create(T entity);
