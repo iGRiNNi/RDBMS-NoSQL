@@ -1,15 +1,18 @@
 package com.example.domain.model;
 
+import org.bson.types.ObjectId;
+
 public class Well {
 
-    private final long id;
+    private final ObjectId id;
     private final String number;
     private final String status;
     private final Double depth;
     private final Double diameter;
-    private final long fieldId;
+    private final ObjectId fieldId;
 
-    public Well(long id, String number, String status, Double depth, Double diameter, long fieldId) {
+    public Well(ObjectId id, String number, String status,
+                Double depth, Double diameter, ObjectId fieldId) {
         this.id = id;
         this.number = number;
         this.status = status;
@@ -18,7 +21,7 @@ public class Well {
         this.fieldId = fieldId;
     }
 
-    public long getId() {
+    public ObjectId getId() {
         return id;
     }
 
@@ -38,7 +41,7 @@ public class Well {
         return diameter;
     }
 
-    public long getFieldId() {
+    public ObjectId getFieldId() {
         return fieldId;
     }
 

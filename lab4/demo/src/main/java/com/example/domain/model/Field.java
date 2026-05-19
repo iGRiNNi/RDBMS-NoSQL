@@ -1,14 +1,16 @@
 package com.example.domain.model;
 
+import org.bson.types.ObjectId;
+
 public class Field {
 
-    private final long id;
+    private final ObjectId id;
     private final String name;
     private final String region;
     private final Double latitude;
     private final Double longitude;
 
-    public Field(long id, String name, String region, Double latitude, Double longitude) {
+    public Field(ObjectId id, String name, String region, Double latitude, Double longitude) {
         this.id = id;
         this.name = name;
         this.region = region;
@@ -16,7 +18,7 @@ public class Field {
         this.longitude = longitude;
     }
 
-    public long getId() {
+    public ObjectId getId() {
         return id;
     }
 

@@ -11,7 +11,10 @@ public final class FieldMapper {
     public static Document toDocument(Field field) {
         Document document = new Document();
 
-        document.append("_id", field.getId());
+        if (field.getId() != null) {
+            document.append("_id", field.getId());
+        }
+
         document.append("name", field.getName());
         document.append("region", field.getRegion());
         document.append("latitude", field.getLatitude());
@@ -26,7 +29,7 @@ public final class FieldMapper {
         }
 
         return new Field(
-                document.getLong("_id"),
+                document.getObjectId("_id"),
                 document.getString("name"),
                 document.getString("region"),
                 getNullableDouble(document, "latitude"),

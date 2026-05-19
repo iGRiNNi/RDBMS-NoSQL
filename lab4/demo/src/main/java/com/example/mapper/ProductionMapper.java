@@ -13,7 +13,10 @@ public final class ProductionMapper {
     public static Document toDocument(Production production) {
         Document document = new Document();
 
-        document.append("_id", production.getId());
+        if (production.getId() != null) {
+            document.append("_id", production.getId());
+        }
+
         document.append("wellId", production.getWellId());
         document.append("productionDate", production.getProductionDate().toString());
         document.append("oil", production.getOil());
@@ -29,8 +32,8 @@ public final class ProductionMapper {
         }
 
         return new Production(
-                document.getLong("_id"),
-                document.getLong("wellId"),
+                document.getObjectId("_id"),
+                document.getObjectId("wellId"),
                 LocalDate.parse(document.getString("productionDate")),
                 document.getDouble("oil"),
                 getNullableDouble(document, "gas"),

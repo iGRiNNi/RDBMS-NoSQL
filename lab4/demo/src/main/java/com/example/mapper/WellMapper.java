@@ -11,7 +11,10 @@ public final class WellMapper {
     public static Document toDocument(Well well) {
         Document document = new Document();
 
-        document.append("_id", well.getId());
+        if (well.getId() != null) {
+            document.append("_id", well.getId());
+        }
+
         document.append("number", well.getNumber());
         document.append("status", well.getStatus());
         document.append("depth", well.getDepth());
@@ -27,12 +30,12 @@ public final class WellMapper {
         }
 
         return new Well(
-                document.getLong("_id"),
+                document.getObjectId("_id"),
                 document.getString("number"),
                 document.getString("status"),
                 getNullableDouble(document, "depth"),
                 getNullableDouble(document, "diameter"),
-                document.getLong("fieldId")
+                document.getObjectId("fieldId")
         );
     }
 

@@ -1,17 +1,21 @@
 package com.example.domain.model;
 
+import org.bson.types.ObjectId;
+
 import java.time.LocalDate;
+
 
 public class Production {
 
-    private final long id;
-    private final long wellId;
+    private final ObjectId id;
+    private final ObjectId wellId;
     private final LocalDate productionDate;
     private final double oil;
     private final Double gas;
     private final Double water;
 
-    public Production(long id, long wellId, LocalDate productionDate, double oil, Double gas, Double water) {
+    public Production(ObjectId id, ObjectId wellId, LocalDate productionDate,
+                      double oil, Double gas, Double water) {
         this.id = id;
         this.wellId = wellId;
         this.productionDate = productionDate;
@@ -20,11 +24,11 @@ public class Production {
         this.water = water;
     }
 
-    public long getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public long getWellId() {
+    public ObjectId getWellId() {
         return wellId;
     }
 

@@ -85,7 +85,11 @@ public abstract class AbstractHashDao<T> implements CrudDao<T, Long> {
     @Override
     public void delete(Long id) {
         RedisClient redis = RedisConnectionManager.getClient();
-        redis.del(hashKey(id));
+
+        try (AbstractTransaction transaction = redis.multi()) {
+            transaction.del(hashKey(id));
+            transaction.exec();
+        }
     }
 
     private void save(T entity) {
@@ -108,15 +112,10 @@ public abstract class AbstractHashDao<T> implements CrudDao<T, Long> {
             }
         }
 
-        AbstractTransaction transaction = redis.multi();
-
-        try {
+        try (AbstractTransaction transaction = redis.multi()) {
             transaction.del(hashKey(id));
             transaction.hset(hashKey(id), hashValues);
             transaction.exec();
-        } catch (RuntimeException e) {
-            discardQuietly(transaction);
-            throw e;
         }
     }
 
@@ -132,12 +131,5 @@ public abstract class AbstractHashDao<T> implements CrudDao<T, Long> {
 
     private String hashField(long id, String fieldName) {
         return RedisKeyBuilder.entityFieldKey(entityType, id, fieldName);
-    }
-
-    private void discardQuietly(AbstractTransaction transaction) {
-        try {
-            transaction.discard();
-        } catch (Exception ignored) {
-        }
     }
 }
