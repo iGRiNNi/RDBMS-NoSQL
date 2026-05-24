@@ -1,38 +1,157 @@
 package org.example;
 
+import org.example.dao.FieldDao;
+import org.example.dao.ProductionDao;
+import org.example.dao.WellDao;
+import org.example.domain.model.Field;
+import org.example.domain.model.Production;
+import org.example.domain.model.Well;
 import org.example.infrastructure.clickhouse.ClickHouseConnectionManager;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Properties;
+import java.time.LocalDate;
+
+import org.example.infrastructure.clickhouse.ClickHouseMigrationRunner;
 
 public class Main {
+
     public static void main(String[] args) {
-        checkClickHouseConnection();
+
+        ClickHouseMigrationRunner migrationRunner = new ClickHouseMigrationRunner();
+        migrationRunner.migrate();
+
+        printTableCounts();
+
+        runCrudDemo();
     }
 
-    private static void checkClickHouseConnection() {
-        try (Connection connection =
-                     ClickHouseConnectionManager.getConnection();
+    private static void printTableCounts() {
+        String sql = """
+                SELECT 'fields' AS table_name, count() AS rows_count FROM fields
+                UNION ALL
+                SELECT 'wells' AS table_name, count() AS rows_count FROM wells
+                UNION ALL
+                SELECT 'productions' AS table_name, count() AS rows_count FROM productions
+                UNION ALL
+                SELECT 'well_versioned' AS table_name, count() AS rows_count FROM well_versioned
+                UNION ALL
+                SELECT 'production_collapsing' AS table_name, count() AS rows_count FROM production_collapsing
+                """;
 
-             Statement statement =
-                     connection.createStatement()) {
+        try (Connection connection = ClickHouseConnectionManager.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet rs = statement.executeQuery(sql)) {
 
-            statement.execute(
-                    "CREATE DATABASE IF NOT EXISTS oil_lab"
-            );
+            System.out.println();
+            System.out.println("=== Количество строк в таблицах ===");
 
-            System.out.println(
-                    "База данных oil_lab создана или уже существует."
-            );
+            while (rs.next()) {
+                System.out.println(
+                        rs.getString("table_name") + ": " + rs.getLong("rows_count")
+                );
+            }
 
         } catch (Exception e) {
-
-            System.out.println(
-                    "Ошибка создания базы данных: " + e.getMessage()
-            );
+            throw new RuntimeException("Ошибка вывода количества строк", e);
         }
+    }
+
+    private static void runCrudDemo() {
+        FieldDao fieldDao = new FieldDao();
+        WellDao wellDao = new WellDao();
+        ProductionDao productionDao = new ProductionDao();
+
+        Field field = new Field(
+                100,
+                "Тестовое месторождение",
+                "Тестовый регион",
+                55.0,
+                60.0
+        );
+
+        Well well = new Well(
+                100,
+                "TEST-100",
+                "active",
+                3000.0,
+                0.22,
+                100L
+        );
+
+        Production production = new Production(
+                100,
+                100,
+                LocalDate.of(2026, 3, 10),
+                100.0,
+                500.0,
+                20.0
+        );
+
+        System.out.println("=== CREATE ===");
+
+        fieldDao.create(field);
+        wellDao.create(well);
+        productionDao.create(production);
+
+        System.out.println(fieldDao.getById(100L));
+        System.out.println(wellDao.getById(100L));
+        System.out.println(productionDao.getById(100L));
+
+        System.out.println();
+        System.out.println("=== UPDATE ===");
+
+        Field updatedField = new Field(
+                100,
+                "Тестовое месторождение",
+                "Обновлённый регион",
+                55.0,
+                60.0
+        );
+
+        Well updatedWell = new Well(
+                100,
+                "TEST-100",
+                "maintenance",
+                3000.0,
+                0.22,
+                100L
+        );
+
+        Production updatedProduction = new Production(
+                100,
+                100,
+                LocalDate.of(2026, 3, 10),
+                120.0,
+                550.0,
+                30.0
+        );
+
+        fieldDao.update(updatedField);
+        wellDao.update(updatedWell);
+        productionDao.update(updatedProduction);
+
+        System.out.println(fieldDao.getById(100L));
+        System.out.println(wellDao.getById(100L));
+        System.out.println(productionDao.getById(100L));
+
+        System.out.println();
+        System.out.println("=== GET ALL ===");
+
+        fieldDao.getAll().forEach(System.out::println);
+        wellDao.getAll().forEach(System.out::println);
+        productionDao.getAll().forEach(System.out::println);
+
+        System.out.println();
+        System.out.println("=== DELETE ===");
+
+        productionDao.delete(100L);
+        wellDao.delete(100L);
+        fieldDao.delete(100L);
+
+        System.out.println("Field после удаления: " + fieldDao.getById(100L));
+        System.out.println("Well после удаления: " + wellDao.getById(100L));
+        System.out.println("Production после удаления: " + productionDao.getById(100L));
     }
 }

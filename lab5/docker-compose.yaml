@@ -1,22 +1,17 @@
 services:
   neo4j:
-    image: neo4j:5.26-community
+    image: neo4j:2026.04.0
     container_name: local-neo4j
     restart: "no"
     ports:
       - "7474:7474"
       - "7687:7687"
     environment:
-      NEO4J_AUTH: neo4j/password
-      NEO4J_dbms_security_auth__enabled: "true"
+      NEO4J_AUTH: neo4j/password123
     volumes:
       - neo4j_data:/data
       - neo4j_logs:/logs
-      - neo4j_import:/var/lib/neo4j/import
-      - neo4j_plugins:/plugins
 
 volumes:
   neo4j_data:
   neo4j_logs:
-  neo4j_import:
-  neo4j_plugins:

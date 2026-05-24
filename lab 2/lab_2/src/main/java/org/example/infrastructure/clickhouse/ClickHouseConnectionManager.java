@@ -17,10 +17,8 @@ public final class ClickHouseConnectionManager {
         properties.setProperty("user", CONFIG.getUsername());
         properties.setProperty("password", CONFIG.getPassword());
         properties.setProperty("client_name", "oil-lab-java");
-        System.out.println(properties);
 
         try {
-            //return DriverManager.getConnection(CONFIG.getUrl(), properties);
             return DriverManager.getConnection(CONFIG.getUrl(), CONFIG.getUsername(), CONFIG.getPassword());
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get ClickHouse connection", e);
