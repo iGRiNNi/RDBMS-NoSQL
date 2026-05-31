@@ -13,7 +13,7 @@ public final class ProductionMapper {
     public static Production fromNode(Node node) {
         return new Production(
                 node.get("productionId").asLong(),
-                LocalDate.parse(node.get("productionDate").asString()),
+                node.get("productionDate").asLocalDate(),
                 node.get("oil").isNull() ? null : node.get("oil").asDouble(),
                 node.get("gas").isNull() ? null : node.get("gas").asDouble(),
                 node.get("water").isNull() ? null : node.get("water").asDouble()

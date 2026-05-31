@@ -45,12 +45,10 @@ ORDER BY id;
 CREATE TABLE IF NOT EXISTS production_collapsing (
     id UInt64,
     well_id UInt64,
-    production_date Date,
     oil Float64,
-    gas Nullable(Float64),
-    water Nullable(Float64),
-    version UInt64,
+    gas Float64,
+    water Float64,
     sign Int8
 )
 ENGINE = CollapsingMergeTree(sign)
-ORDER BY (id, version);
+ORDER BY id;

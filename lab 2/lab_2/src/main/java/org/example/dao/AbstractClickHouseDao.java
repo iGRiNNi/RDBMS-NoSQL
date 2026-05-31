@@ -69,7 +69,6 @@ public abstract class AbstractClickHouseDao<T> implements CrudDao<T, Long> {
         String sql = """
                 ALTER TABLE %s
                 DELETE WHERE %s = ?
-                SETTINGS mutations_sync = 1
                 """.formatted(getTableName(), getIdColumnName());
 
         try (Connection connection = ClickHouseConnectionManager.getConnection();

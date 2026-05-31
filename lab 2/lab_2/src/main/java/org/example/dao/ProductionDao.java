@@ -56,7 +56,6 @@ public class ProductionDao extends AbstractClickHouseDao<Production> {
                    gas = ?,
                    water = ?
             WHERE id = ?
-            SETTINGS mutations_sync = 1
             """;
 
         try (Connection connection = ClickHouseConnectionManager.getConnection();

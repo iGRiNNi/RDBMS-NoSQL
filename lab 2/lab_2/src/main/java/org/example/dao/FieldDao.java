@@ -55,7 +55,6 @@ public class FieldDao extends AbstractClickHouseDao<Field> {
                        latitude = ?,
                        longitude = ?
                 WHERE id = ?
-                SETTINGS mutations_sync = 1
                 """;
 
         try (Connection connection = ClickHouseConnectionManager.getConnection();

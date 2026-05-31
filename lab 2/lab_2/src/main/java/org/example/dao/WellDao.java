@@ -57,7 +57,6 @@ public class WellDao extends AbstractClickHouseDao<Well> {
                        diameter = ?,
                        field_id = ?
                 WHERE id = ?
-                SETTINGS mutations_sync = 1
                 """;
 
         try (Connection connection = ClickHouseConnectionManager.getConnection();

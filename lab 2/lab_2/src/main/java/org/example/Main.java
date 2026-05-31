@@ -3,6 +3,10 @@ package org.example;
 import org.example.dao.FieldDao;
 import org.example.dao.ProductionDao;
 import org.example.dao.WellDao;
+import org.example.demo.AnalyticsDemo;
+import org.example.demo.CollapsingMergeTreeDemo;
+import org.example.demo.JoinDemo;
+import org.example.demo.ReplacingMergeTreeDemo;
 import org.example.domain.model.Field;
 import org.example.domain.model.Production;
 import org.example.domain.model.Well;
@@ -25,6 +29,23 @@ public class Main {
         printTableCounts();
 
         runCrudDemo();
+
+        System.out.println();
+        System.out.println("=== ПУНКТ 2. JOIN ===");
+        JoinDemo joinDemo = new JoinDemo();
+        joinDemo.run();
+
+        System.out.println();
+        System.out.println("=== ПУНКТ 3. АНАЛИТИЧЕСКИЙ ЗАПРОС ===");
+        AnalyticsDemo.run();
+
+        System.out.println();
+        System.out.println("=== ПУНКТ 4. REPLACING MERGE TREE ===");
+        ReplacingMergeTreeDemo.run();
+
+        System.out.println();
+        System.out.println("=== ПУНКТ 5. COLLAPSING MERGE TREE ===");
+        CollapsingMergeTreeDemo.run();
     }
 
     private static void printTableCounts() {
