@@ -15,12 +15,12 @@ import java.util.List;
 public class CassandraMigrationRunner {
 
     private static final List<String> KEYSPACE_SCRIPTS = List.of(
-            "cql/V1__init_keyspace.cql"
+            "db/migration/V1__init_keyspace.cql"
     );
 
     private static final List<String> KEYSPACE_DEPENDENT_SCRIPTS = List.of(
-            "cql/V2__init_tables.cql",
-            "cql/V3__init_indexes.cql"
+            "db/migration/V2__init_tables.cql",
+            "db/migration/V3__init_indexes.cql"
     );
 
     private final CassandraConfig config;
