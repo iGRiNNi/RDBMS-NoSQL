@@ -36,18 +36,16 @@ public class ApplicationRunner {
     }
 
     public void run() {
-        System.out.println("=== Лабораторная работа Cassandra ===");
-
         System.out.println();
-        System.out.println("=== ПУНКТ 1. CRUD И РАЗРЕЖЕННЫЕ ДАННЫЕ ===");
+        System.out.println("CRUD");
         crudScenarioService.run();
 
         System.out.println();
-        System.out.println("=== ПУНКТ 2. ЗАПРОСЫ С ФИЛЬТРАЦИЕЙ ===");
+        System.out.println("ЗАПРОСЫ С ФИЛЬТРАЦИЕЙ");
         filterQueryService.run();
 
         System.out.println();
-        System.out.println("=== ПУНКТ 3. ЗАПРОСЫ ПО РАЗРЕЖЕННЫМ СТОЛБЦАМ ===");
+        System.out.println("ЗАПРОСЫ ПО РАЗРЕЖЕННЫМ СТОЛБЦАМ");
         sparseColumnQueryService.run();
     }
 }
