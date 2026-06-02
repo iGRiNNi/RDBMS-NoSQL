@@ -12,20 +12,17 @@ public final class CassandraConfig {
     private final int port;
     private final String localDatacenter;
     private final String keyspace;
-    private final String flywayUrl;
 
     private CassandraConfig(
             String contactPoint,
             int port,
             String localDatacenter,
-            String keyspace,
-            String flywayUrl
+            String keyspace
     ) {
         this.contactPoint = contactPoint;
         this.port = port;
         this.localDatacenter = localDatacenter;
         this.keyspace = keyspace;
-        this.flywayUrl = flywayUrl;
     }
 
     public static CassandraConfig load() {
@@ -41,12 +38,16 @@ public final class CassandraConfig {
 
             properties.load(inputStream);
 
+            String contactPoint = getRequiredProperty(properties, "cassandra.contact-point");
+            int port = Integer.parseInt(getRequiredProperty(properties, "cassandra.port"));
+            String localDatacenter = getRequiredProperty(properties, "cassandra.local-datacenter");
+            String keyspace = getRequiredProperty(properties, "cassandra.keyspace");
+
             return new CassandraConfig(
-                    getRequiredProperty(properties, "cassandra.contact-point"),
-                    Integer.parseInt(getRequiredProperty(properties, "cassandra.port")),
-                    getRequiredProperty(properties, "cassandra.local-datacenter"),
-                    getRequiredProperty(properties, "cassandra.keyspace"),
-                    getRequiredProperty(properties, "cassandra.flyway-url")
+                    contactPoint,
+                    port,
+                    localDatacenter,
+                    keyspace
             );
 
         } catch (IOException e) {
@@ -78,9 +79,5 @@ public final class CassandraConfig {
 
     public String getKeyspace() {
         return keyspace;
-    }
-
-    public String getFlywayUrl() {
-        return flywayUrl;
     }
 }

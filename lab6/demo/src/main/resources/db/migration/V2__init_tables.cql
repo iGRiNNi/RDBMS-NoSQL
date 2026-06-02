@@ -1,3 +1,5 @@
+USE oil_lab;
+
 DROP TABLE IF EXISTS productions_by_well;
 DROP TABLE IF EXISTS wells_by_id;
 DROP TABLE IF EXISTS fields_by_id;
