@@ -120,7 +120,7 @@ public class FilterQueryService {
             printWells(activeDeepWells);
 
             System.out.println();
-            System.out.println("ОБНОВЛЕНИЕ ПО УСЛОВИЮ");
+            System.out.println("ОБНОВЛЕНИЕ ПО УСЛОВИЮ ");
             System.out.println("Меняем статус ACTIVE -> MAINTENANCE для скважин глубже 3000 м");
 
             int updatedCount = wellDao.updateStatusByStatusAndDepthGreaterThan(
@@ -131,6 +131,7 @@ public class FilterQueryService {
 
             System.out.println("Обновлено скважин: " + updatedCount);
 
+            System.out.println();
             System.out.println("Проверка после обновления:");
             System.out.println(wellDao.getById(wellId1).orElse(null));
             System.out.println(wellDao.getById(wellId2).orElse(null));
@@ -147,6 +148,7 @@ public class FilterQueryService {
 
             System.out.println("Удалено скважин: " + deletedCount);
 
+            System.out.println();
             System.out.println("Проверка удалённой скважины:");
             System.out.println(wellDao.getById(wellId4).orElse(null));
 
