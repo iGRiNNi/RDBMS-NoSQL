@@ -7,13 +7,13 @@ import org.example.domain.document.FieldDocument;
 import org.example.domain.document.ProductionDocument;
 import org.example.domain.document.WellDocument;
 
-public class CrudScenarioService {
+public class CrudService {
 
     private final FieldSearchDao fieldSearchDao;
     private final WellSearchDao wellSearchDao;
     private final ProductionSearchDao productionSearchDao;
 
-    public CrudScenarioService(
+    public CrudService(
             FieldSearchDao fieldSearchDao,
             WellSearchDao wellSearchDao,
             ProductionSearchDao productionSearchDao
